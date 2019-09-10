@@ -1,0 +1,7 @@
+name = "Texbles"
+uuid = "3b13967b-2c61-441d-9c16-8a493e46e40e"
+authors = ["Jooa <code@jooa.xyz>"]
+version = "0.1.0"
+
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
