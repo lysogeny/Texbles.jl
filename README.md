@@ -26,7 +26,7 @@ Usage
 
 This is most useful for summary tables.
 
-```{julia}
+```julia
 using Texbles
 using RDatasets
 using DataFrames
