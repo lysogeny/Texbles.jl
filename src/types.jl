@@ -7,6 +7,6 @@ Types inheriting `Number` get assigned a "r", any others an "l"
 function inferspec(table::DataFrame)
     types = map(x -> eltype(table[:,x]), names(table))
     spec = map(t -> t <: Number ? "r" : "l", types)
-    spec = join(spec)
+    return join(spec)
 end
 # Todo: Make this more versatile.
