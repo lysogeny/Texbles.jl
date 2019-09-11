@@ -1,6 +1,6 @@
 module Texbles
     import DataFrames
-    export Tabular, AbstractTable, sparsify, sparsify!, show, save, display, string
+    export Tabular, AbstractTable, sparsify, sparsify!, save, display, string, show
 
     include("sparsify.jl")
     include("open.jl")
@@ -121,7 +121,7 @@ module Texbles
     Show the `table` in `format`. This saves the table as a temporary file in
     format `format`, and then tries to open the file for user interaction.
     """
-    function show(table::AbstractTable; format::AbstractString="svg")
+    function Base.show(table::AbstractTable; format::AbstractString="svg")
         # This function will compile a table and show it
         tempbase = tempname()
         filename = "$tempbase.$format"
