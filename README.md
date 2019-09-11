@@ -5,6 +5,14 @@ Create tabulars within Julia!
 
 This is work in progress.
 
+Installation
+------------
+
+1. Check that your system meets the requirements (see below). If it doesn't install the necessary components.
+2. Since this is not a registered package, in the julia REPL (by entering pkg mode using `]`:
+
+    pkg> add https://github.com/lysogeny/Texbles.jl
+
 Requirements
 ------------
 
@@ -16,7 +24,32 @@ Requirements
 Usage
 -----
 
-Todo.
+This is most useful for summary tables.
+
+    using Texbles
+    using RDatasets
+    using DataFrames
+    using DataFramesMeta
+    using Statistics
+
+    cars = dataset("datasets", "mtcars")
+
+    # Compute a summary table
+    meanmpg = @linq cars |> 
+        groupby([:Gear, :Cyl]) |> 
+        orderby([:Gear, :Cyl]) |>
+        based_on(MeanMPG = mean(:MPG)) |> 
+        transform(Gear=map(x -> string(x), :Gear),
+                  Cyl=map(x -> string(x), :Cyl),
+                  MeanMPG=map(x -> round(x), :MeanMPG))
+
+    tab = Tabular(meanmpg)
+
+    show(tab)
+
+This opens the following image in your browser:
+
+![](example.svg)
 
 Todo
 ----
