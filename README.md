@@ -26,26 +26,30 @@ Usage
 
 This is most useful for summary tables.
 
-    using Texbles
-    using RDatasets
-    using DataFrames
-    using DataFramesMeta
-    using Statistics
+```{julia}
+using Texbles
+using RDatasets
+using DataFrames
+using DataFramesMeta
+using Statistics
 
-    cars = dataset("datasets", "mtcars")
+cars = dataset("datasets", "mtcars")
 
-    # Compute a summary table
-    meanmpg = @linq cars |> 
-        groupby([:Gear, :Cyl]) |> 
-        orderby([:Gear, :Cyl]) |>
-        based_on(MeanMPG = mean(:MPG)) |> 
-        transform(Gear=map(x -> string(x), :Gear),
-                  Cyl=map(x -> string(x), :Cyl),
-                  MeanMPG=map(x -> round(x), :MeanMPG))
+# Compute a summary table
+meanmpg = @linq cars |> 
+    groupby([:Gear, :Cyl]) |> 
+    orderby([:Gear, :Cyl]) |>
+    based_on(MeanMPG = mean(:MPG)) |> 
+    transform(Gear=map(x -> string(x), :Gear),
+              Cyl=map(x -> string(x), :Cyl),
+              MeanMPG=map(x -> round(x), :MeanMPG))
 
-    tab = Tabular(meanmpg)
+tab = Tabular(meanmpg)
 
-    show(tab)
+show(tab)
+```
+
+(See also example.jl)
 
 This opens the following image in your browser:
 
