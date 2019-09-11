@@ -1,5 +1,12 @@
 using DataFrames
+using DataFramesMeta
 using Test
+
+using Texbles
+
+import Texbles.pdf2svg
+import Texbles.tex2pdf
+import Texbles.pandoc
 
 # Prepare a dataset
 channels = ["red", "green", "blue"]
@@ -27,7 +34,7 @@ colours.value = [reds; greens; blues]
 colours = @orderby(colours, :name, :channel)
 
 tab = Tabular(colours)
-
+# I am not sure these tests are necessary. Mainly test for the constructor properly working.
 @test typeof(tab) <: AbstractTable
 @test typeof(tab) <: Tabular
 @test typeof(tab.data) <: DataFrame
@@ -35,7 +42,8 @@ tab = Tabular(colours)
 
 # Test that various file types can be produced
 # Problematically doesn't test if the various files are in fact the files that
-# we want.
+# we want. It could well be that our code produces a html file with a "svg"
+# ending through pandoc.
 map(["tex", "svg", "pdf", "md", "html"]) do ending
     mktempdir() do dir
         filename = joinpath(dir, "test.$ending")
@@ -43,3 +51,29 @@ map(["tex", "svg", "pdf", "md", "html"]) do ending
         @test isfile(filename)
     end
 end
+
+# show(::Tabular) will not be tested. This is because of the difficulty posed
+# by testing if something opens in a browser.
+
+# Individual conversions can be tested:
+
+base_name = tempname()
+tex_name = base_name*".tex"
+svg_name = base_name*".svg"
+pdf_name = base_name*".pdf"
+md_name = base_name*".md"
+open(tex_name, "w") do file
+    write(file, string(tab, full=true))
+end
+tex2pdf(tex_name)
+@test isfile(pdf_name)
+@test ~isfile(svg_name)
+pdf2svg(pdf_name)
+@test isfile(svg_name)
+pandoc(tex_name, md_name)
+@test isfile(md_name)
+rm(tex_name)
+rm(svg_name)
+rm(pdf_name)
+rm(md_name)
+

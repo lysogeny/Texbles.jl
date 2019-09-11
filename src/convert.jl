@@ -21,8 +21,14 @@ function tex2pdf(in::AbstractString, out::AbstractString=splitext(in)[1]*".pdf")
         temp_file = joinpath(dir, base_name)
         temp_out = joinpath(dir, name_base*".pdf")
         cp(in, temp_file)
-        cd(dir) do
-            run(`pdflatex $temp_file`)
+        output = cd(dir) do
+          outpipe = Pipe()
+          ret = run(pipeline(`pdflatex $temp_file -interaction nonstopmode -halt-on-error`, outpipe))
+          close(outpipe.in)
+          if ret.exitcode != 0
+            lines=readlines(outpipe)
+            error("call to pdflatex failed: $lines")
+          end
         end
         cp(temp_out, out, force=true)
     end
