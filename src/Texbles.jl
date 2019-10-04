@@ -89,16 +89,16 @@ module Texbles
         # We first figure out where to put a tex file
         tempbase = tempname()
         tempfile = tempbase * ".tex"
+        extension = splitext(filename)[2]
         # We save the tabular text to the temporary file
         open(tempfile, "w") do file
-            tab_text = string(table, full=true)
+            tab_text = string(table, full=extension!=".tex")
             write(file, tab_text)
         end
         # Now figure out what to do with the tex
-        extension = splitext(filename)[2]
         if extension == ".tex"
             # Here we just copy
-            result = cp(tempfile, filename)
+            result = cp(tempfile, filename, force=true)
         elseif extension == ".svg"
             # Here we need to first pandoc, then pdf2svg
             intermediate_pdf = tempbase * ".pdf"
